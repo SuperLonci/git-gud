@@ -16,7 +16,7 @@ Displays a cheat-sheet of common Git commands with a bit of style.
 
 ### 🟦 Windows
 
-1. Download `git-gud.exe` from [Releases](https://github.com/YOUR_USERNAME/git-gud/releases)
+1. Download `git-gud.exe` from [Releases](https://github.com/SuperLonci/git-gud/releases)
 2. Move it to Git’s executable folder:
 
 ```powershell
