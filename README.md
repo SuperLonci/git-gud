@@ -1,6 +1,6 @@
 # git-gud
 
-A friendly, custom `git` subcommand: `git gud` — to remind you how not to suck at Git.
+A friendly (and possibly judgmental), custom `git` subcommand: `git gud` — to remind you how not to suck at Git.
 
 Displays a cheat-sheet of common Git commands with a bit of style.
 
@@ -21,3 +21,18 @@ Displays a cheat-sheet of common Git commands with a bit of style.
 
 ```powershell
 copy .\git-gud.exe "C:\Program Files\Git\cmd\"
+```
+
+### 🧴 Homebrew
+
+Install via your own Homebrew tap:
+
+```bash
+brew tap superlonci/gitgud
+brew install git-gud
+```
+
+### Build from Source
+```bash
+go build -o git-gud main.go
+```
