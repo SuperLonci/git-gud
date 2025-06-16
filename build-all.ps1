@@ -1,36 +1,47 @@
-# Build git-gud for Windows, macOS, and Linux
+# Define build output folder
 $outputDir = "build"
+Remove-Item -Recurse -Force $outputDir -ErrorAction SilentlyContinue
 New-Item -ItemType Directory -Force -Path $outputDir | Out-Null
 
-Write-Host "🔨 Building binaries..."
+# Build targets
+$targets = @(
+    @{ GOOS = "windows"; GOARCH = "amd64"; OUT = "git-gud-windows.exe" },
+    @{ GOOS = "darwin";  GOARCH = "arm64";  OUT = "git-gud-macos-arm64" },
+    @{ GOOS = "darwin";  GOARCH = "amd64";  OUT = "git-gud-macos-amd64" },
+    @{ GOOS = "linux";   GOARCH = "amd64";  OUT = "git-gud-linux" }
+)
 
-# Build for Windows
-$env:GOOS = "windows"
-$env:GOARCH = "amd64"
-go build -o "$outputDir/git-gud-windows.exe"
-Write-Host "✅ Built git-gud-windows.exe"
+# Loop through targets
+foreach ($target in $targets) {
+    $env:GOOS = $target.GOOS
+    $env:GOARCH = $target.GOARCH
+    $outputFile = Join-Path $outputDir $target.OUT
 
-# Build for macOS (Apple Silicon)
-$env:GOOS = "darwin"
-$env:GOARCH = "arm64"
-go build -o "$outputDir/git-gud-macos-arm64"
-Write-Host "✅ Built git-gud-macos-arm64"
+    Write-Host "Building for $env:GOOS/$env:GOARCH -> $($target.OUT)"
 
-# Build for Linux
-$env:GOOS = "linux"
-$env:GOARCH = "amd64"
-go build -o "$outputDir/git-gud-linux"
-Write-Host "✅ Built git-gud-linux"
+    go build -o $outputFile main.go
 
-# Clean up env vars
+    if (!(Test-Path $outputFile)) {
+        Write-Error "Build failed: $outputFile was not created."
+        exit 1
+    }
+
+    Write-Host "Built $($target.OUT)"
+}
+
+# Clean up Go env
 Remove-Item Env:GOOS
 Remove-Item Env:GOARCH
 
-Write-Host "`n📦 Zipping binaries..."
+# Zip binaries
+# Write-Host ""
+# Write-Host "Zipping binaries..."
 
-# Zip each binary individually
-Compress-Archive -Path "$outputDir/git-gud-windows.exe" -DestinationPath "$outputDir/git-gud-windows.zip"
-Compress-Archive -Path "$outputDir/git-gud-macos-arm64"   -DestinationPath "$outputDir/git-gud-macos-arm64.zip"
-Compress-Archive -Path "$outputDir/git-gud-linux"          -DestinationPath "$outputDir/git-gud-linux.zip"
+# Get-ChildItem $outputDir -File | ForEach-Object {
+#     $zipPath = "$($_.FullName).zip"
+#     Compress-Archive -Path $_.FullName -DestinationPath $zipPath -Force
+#     Write-Host "Created $zipPath"
+# }
 
-Write-Host "🎉 All done! Zipped binaries saved in: $outputDir"
+Write-Host ""
+Write-Host "All builds completed successfully!"
