@@ -25,8 +25,6 @@ copy .\git-gud.exe "C:\Program Files\Git\cmd\"
 
 ### 🧴 Homebrew
 
-Install via your own Homebrew tap:
-
 ```bash
 brew tap superlonci/gitgud
 brew install git-gud
