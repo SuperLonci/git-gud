@@ -33,3 +33,4 @@ go.work.sum
 
 # Build directories
 build/
+.DS_Store
